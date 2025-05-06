@@ -1,0 +1,40 @@
+/*
+프로그래머스
+상품을 구매한 회원 비율 구하기
+https://school.programmers.co.kr/learn/courses/30/lessons/131534
+*/
+
+WITH USERS_JOINED_2021 AS (
+    SELECT
+        USER_ID
+    FROM
+        USER_INFO
+    WHERE
+        JOINED BETWEEN "2021-01-01" AND "2021-12-31"
+)
+
+SELECT
+    os.YEAR,
+    os.MONTH,
+    os.PURCHASED_USERS,
+    ROUND(os.PURCHASED_USERS / total.TOTAL_USERS, 1) AS PURCHASED_RATIO
+FROM (
+    SELECT
+        YEAR(os.SALES_DATE) AS YEAR,
+        MONTH(os.SALES_DATE) AS MONTH,
+        COUNT(DISTINCT os.USER_ID) AS PURCHASED_USERS
+    FROM 
+        ONLINE_SALE AS os
+    JOIN
+        USERS_JOINED_2021 AS u ON u.USER_ID = os.USER_ID
+    GROUP BY
+        YEAR(os.SALES_DATE),
+        MONTH(os.SALES_DATE)
+) AS os
+CROSS JOIN (
+    SELECT COUNT(DISTINCT USER_ID) AS TOTAL_USERS FROM USERS_JOINED_2021
+) AS total
+ORDER BY
+    YEAR ASC,
+    MONTH ASC 
+;
