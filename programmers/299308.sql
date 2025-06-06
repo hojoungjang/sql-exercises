@@ -1,0 +1,25 @@
+/*
+프로그래머스
+분기별 분화된 대장균의 개체 수 구하기
+https://school.programmers.co.kr/learn/courses/30/lessons/299308
+*/
+
+SELECT
+    ed.QUARTER,
+    COUNT(DISTINCT ed.ID) AS ECOLI_COUNT
+FROM (
+    SELECT
+        ID,
+        CASE
+            WHEN MONTH(DIFFERENTIATION_DATE) BETWEEN 1 AND 3 THEN '1Q'
+            WHEN MONTH(DIFFERENTIATION_DATE) BETWEEN 4 AND 6 THEN '2Q'
+            WHEN MONTH(DIFFERENTIATION_DATE) BETWEEN 7 AND 9 THEN '3Q'
+            WHEN MONTH(DIFFERENTIATION_DATE) BETWEEN 10 AND 12 THEN '4Q'
+        END AS QUARTER
+    FROM
+        ECOLI_DATA
+) AS ed
+GROUP BY
+    ed.QUARTER
+ORDER BY
+    ed.QUARTER;
